@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Token sheet generator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="editor-wrapper">
+        <div class="page-settings">
+            <div>
+                <button id="load-template" type="button">Load template</button>
+            </div>
+            <div>
+                <button id="save-template" type="button">Save template</button>
+            </div>
+            <div>
+                <label for="page-format">Page format</label><br>
+                <select name="page-format" id="page-format">
+                    <option value="A4" selected>A4</option>
+                    <option value="letter">US letter</option>
+                </select>
+            </div>
+            <div>
+                <label for="units">Units</label><br>
+                <select name="units" id="units">
+                    <option value="mm" selected>Millimeters</option>
+                    <option value="letter">Centimeters</option>
+                    <option value="in">Inches</option>
+                </select>
+            </div>
+        </div>
+        <div class="tokens-list">
+
+        </div>
+        <div class="preview">
+
+        </div>
+    </div>
+</body>
+</html>

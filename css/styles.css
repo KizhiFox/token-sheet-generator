@@ -9,3 +9,9 @@
     width: 100%;
     height: 100%;
 }
+.card-img {
+    width: 100px;
+}
+.card-delete-img {
+    width: 30px;
+}

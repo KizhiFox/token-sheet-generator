@@ -52,7 +52,7 @@
                 <input name="padding-top" id="padding-top">
             </div>
             <div>
-                <label for="token-gap">Gap between tokens </label><br>
+                <label for="token-gap">Gap between tokens</label><br>
                 <input name="token-gap" id="token-gap">
             </div>
             <div>
@@ -62,12 +62,12 @@
         <div class="tokens-list">
             <div>
                 <label for="add-token">Upload tokens</label><br>
-                <input type="file" multiple id="add-token" class="add-token" accept=".jpg, .png, .jpeg|image/*" onchange="uploadTokens(this)">
+                <input type="file" multiple id="add-token" class="add-token" accept=".jpg, .png, .jpeg|image/*" onChange="uploadTokens(this)">
             </div>
-            <div id="tokens-list"></div>
+            <div class="tokens-list" id="tokens-list"></div>
         </div>
         <div class="preview">
-            <iframe id="pdf-viewer" class="pdf-viewer" src="placeholder.pdf"></iframe>
+            <iframe id="pdf-viewer" class="pdf-viewer" src="img/placeholder.pdf"></iframe>
         </div>
     </div>
     <script src="js/script.js"></script>

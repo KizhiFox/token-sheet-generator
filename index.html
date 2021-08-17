@@ -4,65 +4,63 @@
     <meta charset="UTF-8">
     <title>Token sheet generator</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script src="js/blob-stream.js"></script>
-    <script src="js/pdfkit.standalone.js"></script>
+    <script type="text/javascript" src="js/pdf-lib.min.js"></script>
 </head>
 <body>
     <div class="editor-wrapper">
         <div class="page-settings">
             <div>
-                <button id="load-template" type="button">Load template</button>
+                <button id="load-project" type="button">Load project</button>
             </div>
             <div>
-                <button id="save-template" type="button">Save template</button>
+                <button id="save-project" type="button" onclick="export2txt()">Save project</button>
+            </div>
+            <div>
+                <button id="reset-default" type="button" onclick="resetDefault()">Reset default settings</button>
             </div>
             <div>
                 <label for="page-format">Page format</label><br>
                 <select name="page-format" id="page-format">
                     <option value="A4" selected>A4</option>
-                    <option value="letter">US letter</option>
+                    <option value="Letter">US letter</option>
                 </select>
             </div>
             <div>
                 <label for="units">Units</label><br>
                 <select name="units" id="units">
                     <option value="mm" selected>Millimeters</option>
-                    <option value="letter">Centimeters</option>
-                    <option value="in">Inches</option>
+                    <option value="cm">Centimeters</option>
+                    <option value="inch">Inches</option>
                 </select>
             </div>
             <div>
                 <label for="token-width">Medium token width</label><br>
-                <input name="token-width" id="token-width">
+                <input name="token-width" id="token-width" value="27.7">
             </div>
             <div>
                 <label for="page-width">Page width</label><br>
-                <input name="page-width" id="page-width">
+                <input name="page-width" id="page-width" value="167">
             </div>
             <div>
                 <label for="page-height">Page height</label><br>
-                <input name="page-height" id="page-height">
+                <input name="page-height" id="page-height" value="278">
             </div>
             <div>
                 <label for="padding-left">Left padding</label><br>
-                <input name="padding-left" id="padding-left">
+                <input name="padding-left" id="padding-left" value="25">
             </div>
             <div>
                 <label for="padding-top">Top padding</label><br>
-                <input name="padding-top" id="padding-top">
+                <input name="padding-top" id="padding-top" value="10">
             </div>
             <div>
-                <label for="token-gap">Gap between tokens</label><br>
-                <input name="token-gap" id="token-gap">
-            </div>
-            <div>
-                <button id="export-pdf" type="button" onclick="renderPDF()">Export to PDF</button>
+                <button id="export-pdf" type="button" onclick="parseTokens()">Export to PDF</button>
             </div>
         </div>
         <div class="tokens-list">
             <div>
                 <label for="add-token">Upload tokens</label><br>
-                <input type="file" multiple id="add-token" class="add-token" accept=".jpg, .png, .jpeg|image/*" onChange="uploadTokens(this)">
+                <input type="file" multiple id="add-token" class="add-token" accept=".jpg, .png, .jpeg|image/*" onchange="uploadTokens(this)">
             </div>
             <div class="tokens-list" id="tokens-list"></div>
         </div>

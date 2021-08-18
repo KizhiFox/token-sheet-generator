@@ -2,29 +2,40 @@ let tokensList = [];
 let pdfViewer = document.getElementById('pdf-viewer');
 pdfViewer.src = "img/placeholder.pdf";
 
-function export2txt() {
+function exportProject() {
   let toExport = {
-    'tokens': []
+    pageFormat: document.getElementById('page-format').value,
+    units: document.getElementById('units').value,
+    tokenWidth: document.getElementById('token-width').value,
+    pageWidth: document.getElementById('page-width').value,
+    pageHeight: document.getElementById('page-height').value,
+    paddingLeft: document.getElementById('padding-left').value,
+    paddingTop: document.getElementById('padding-top').value,
+    tokens: tokensList
   };
-  for (let i = 0; i < tokensList.length; i++) {
-    let reader = new FileReader();
-    reader.readAsDataURL(tokensList[i].img);
-    reader.onloadend = function() {
-      let base64data = reader.result;
-      toExport['tokens'].push({
-        'name': tokensList[i].name,
-        'count': tokensList[i].count,
-        'size': tokensList[i].size,
-        'img': base64data
-      });
-    }
-  }
-  console.log(toExport);
-  console.log(JSON.stringify(toExport), null, 2);
-  let a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(toExport)], {type: "text/plain"}));
-  a.download = "tokens.json";
+  let a = document.createElement('a');
+  let file = new Blob([JSON.stringify(toExport, null, 2)], {type: 'application/json'});
+  a.href = URL.createObjectURL(file);
+  a.download = 'tokens.json';
   a.click();
+}
+
+function loadProject(input) {
+  let file = input.files.item(0);
+  let reader = new FileReader();
+  reader.readAsText(file);
+  reader.onload = function(event) {
+    project = JSON.parse(event.target.result);
+    document.getElementById('page-format').value = project.pageFormat;
+    document.getElementById('units').value = project.units;
+    document.getElementById('token-width').value = project.tokenWidth;
+    document.getElementById('page-width').value = project.pageWidth;
+    document.getElementById('page-height').value = project.pageHeight;
+    document.getElementById('padding-left').value = project.paddingLeft;
+    document.getElementById('padding-top').value = project.paddingTop;
+    tokensList = project.tokens;
+    showTokens();
+  };
 }
 
 function resetDefault() {
@@ -102,15 +113,14 @@ async function createPdf(tokenPages) {
     let pageHeight = page.getHeight();
     // Place tokens on a doc
     for (let j = 0; j < tokenPages[i].length; j++) {
+      let mimeType = tokenPages[i][j].img.split(/[\s:;]+/, 3)[1];
       let image;
-      switch (tokenPages[i][j].img.type) {
+      switch (mimeType) {
         case 'image/png':
-          let pngImageBytes = await fetch(URL.createObjectURL(tokenPages[i][j].img)).then((res) => res.arrayBuffer());
-          image = await pdfDoc.embedPng(pngImageBytes);
+          image = await pdfDoc.embedPng(tokenPages[i][j].img);
           break;
         case 'image/jpeg':
-          let jpgImageBytes = await fetch(URL.createObjectURL(tokenPages[i][j].img)).then((res) => res.arrayBuffer());
-          image = await pdfDoc.embedJpg(jpgImageBytes);
+          image = await pdfDoc.embedJpg(tokenPages[i][j].img);
           break;
         default:
           image = null;
@@ -220,7 +230,7 @@ function showTokens() {
     <div class="token-card" id="token-${i}" index="${i}">
       <table><tr>
         <td>
-          <img class="card-img" src="${URL.createObjectURL(tokensList[i].img)}">
+          <img class="card-img" src="${tokensList[i].img}">
         </td>
         <td>
           <input type="text" class="card-input" id="card-text-${i}" value="${tokensList[i].name}" onchange="changeName(this)"><br>
@@ -266,7 +276,11 @@ function deleteToken(button) {
 function uploadTokens(input) {
   for (let i = 0; i < input.files.length; i++) {
     let file = input.files.item(i);
-    tokensList.push({name: file.name, count: 1, size: 'medium', img: file});
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function(event) {
+      tokensList.push({name: file.name, count: 1, size: 'medium', img: event.target.result});
+      showTokens();
+    };
   }
-  showTokens();
 }

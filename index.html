@@ -10,10 +10,11 @@
     <div class="editor-wrapper">
         <div class="page-settings">
             <div>
-                <button id="load-project" type="button">Load project</button>
+                <button id="load-project" type="button" onclick="document.getElementById('project-loader').click()">Load project</button>
+                <input type="file" id="project-loader" accept="application/JSON" onchange="loadProject(this)" hidden>
             </div>
             <div>
-                <button id="save-project" type="button" onclick="export2txt()">Save project</button>
+                <button id="save-project" type="button" onclick="exportProject()">Save project</button>
             </div>
             <div>
                 <button id="reset-default" type="button" onclick="resetDefault()">Reset default settings</button>
@@ -59,8 +60,8 @@
         </div>
         <div class="tokens-list">
             <div>
-                <label for="add-token">Upload tokens</label><br>
-                <input type="file" multiple id="add-token" class="add-token" accept=".jpg, .png, .jpeg|image/*" onchange="uploadTokens(this)">
+                <button id="add-token" type="button" onclick="document.getElementById('token-loader').click()">Upload tokens</button>
+                <input type="file" multiple id="token-loader" accept=".jpg, .png, .jpeg|image/*" onchange="uploadTokens(this)" hidden>
             </div>
             <div class="tokens-list" id="tokens-list"></div>
         </div>

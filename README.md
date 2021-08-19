@@ -1,6 +1,6 @@
 # Token sheet generator
 
-*version 0.2*
+*version 0.3*
 
 This app places tabletop RPG tokens on a PDF sheets, which helps save time in preparing for printing.
 

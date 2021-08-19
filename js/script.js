@@ -1,16 +1,28 @@
 let tokensList = [];
-let pdfViewer = document.getElementById('pdf-viewer');
+const pdfViewer = document.getElementById('pdf-viewer');
 pdfViewer.src = "img/placeholder.pdf";
+const pageSizes = {
+  A4: {
+    width: PDFLib.PageSizes.A4[0],
+    height: PDFLib.PageSizes.A4[1]
+  },
+  Letter: {
+    width: PDFLib.PageSizes.Letter[0],
+    height: PDFLib.PageSizes.Letter[1]
+  }
+};
+parseTokens();
 
 function exportProject() {
   let toExport = {
     pageFormat: document.getElementById('page-format').value,
     units: document.getElementById('units').value,
     tokenWidth: document.getElementById('token-width').value,
-    pageWidth: document.getElementById('page-width').value,
-    pageHeight: document.getElementById('page-height').value,
-    paddingLeft: document.getElementById('padding-left').value,
     paddingTop: document.getElementById('padding-top').value,
+    paddingBottom: document.getElementById('padding-bottom').value,
+    paddingLeft: document.getElementById('padding-left').value,
+    paddingRight: document.getElementById('padding-right').value,
+    renderBorders: document.getElementById('render-borders').checked,
     tokens: tokensList
   };
   let a = document.createElement('a');
@@ -29,10 +41,11 @@ function loadProject(input) {
     document.getElementById('page-format').value = project.pageFormat;
     document.getElementById('units').value = project.units;
     document.getElementById('token-width').value = project.tokenWidth;
-    document.getElementById('page-width').value = project.pageWidth;
-    document.getElementById('page-height').value = project.pageHeight;
-    document.getElementById('padding-left').value = project.paddingLeft;
     document.getElementById('padding-top').value = project.paddingTop;
+    document.getElementById('padding-bottom').value = project.paddingBottom;
+    document.getElementById('padding-left').value = project.paddingLeft;
+    document.getElementById('padding-right').value = project.paddingRight;
+    document.getElementById('render-borders').checked = project.renderBorders;
     tokensList = project.tokens;
     showTokens();
   };
@@ -41,11 +54,12 @@ function loadProject(input) {
 function resetDefault() {
   document.getElementById('page-format').value = 'A4';
   document.getElementById('units').value = 'mm';
-  document.getElementById('token-width').value = 27.7;
-  document.getElementById('page-width').value = 167.0;
-  document.getElementById('page-height').value = 278.0;
-  document.getElementById('padding-left').value = 25.0;
-  document.getElementById('padding-top').value = 10.0;
+  document.getElementById('token-width').value = '26.0';
+  document.getElementById('padding-top').value = '5.0';
+  document.getElementById('padding-bottom').value = '5.0';
+  document.getElementById('padding-left').value = '14.0';
+  document.getElementById('padding-right').value = '14.0';
+  document.getElementById('render-borders').checked = true;
 }
 
 function mmToPt(mm) {
@@ -58,6 +72,18 @@ function cmToPt(cm) {
 
 function inchToPt(inch) {
   return inch * 72;
+}
+
+function ptToMm(pt) {
+  return pt / 2.83465;
+}
+
+function ptToCm(pt) {
+  return pt / 28.3465;
+}
+
+function ptToInch(pt) {
+  return pt / 72;
 }
 
 function detectIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
@@ -79,12 +105,37 @@ function detectIntersection(x1, y1, x2, y2, x3, y3, x4, y4) {
   return true;
 }
 
-async function createPdf(tokenPages) {
-  let paddingTop = parseFloat(document.getElementById('padding-top').value);
-  let paddingLeft = parseFloat(document.getElementById('padding-left').value);
+function drawBorders(page, converter, paddingTop, paddingBottom, paddingLeft, paddingRight) {
+  page.drawLine({
+    start: { x: converter(paddingLeft), y: 0 },
+    end: { x: converter(paddingLeft), y: page.getHeight() },
+    thickness: 1,
+    color: PDFLib.rgb(0.75, 0.75, 0.75)
+  });
+  page.drawLine({
+    start: { x: page.getWidth() - converter(paddingRight), y: 0 },
+    end: { x: page.getWidth() - converter(paddingRight), y: page.getHeight() },
+    thickness: 1,
+    color: PDFLib.rgb(0.75, 0.75, 0.75)
+  });
+  page.drawLine({
+    start: { x: 0, y: page.getHeight() - converter(paddingTop) },
+    end: { x: page.getWidth(), y: page.getHeight() - converter(paddingTop) },
+    thickness: 1,
+    color: PDFLib.rgb(0.75, 0.75, 0.75)
+  });
+  page.drawLine({
+    start: { x: 0, y: converter(paddingBottom) },
+    end: { x: page.getWidth(), y: converter(paddingBottom) },
+    thickness: 1,
+    color: PDFLib.rgb(0.75, 0.75, 0.75)
+  });
+}
+
+async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight) {
+  let renderBorders = document.getElementById('render-borders').checked;
   let pdfDoc = await PDFLib.PDFDocument.create();
-  let converter = mmToPt;
-  let pageFormat;
+  let converter;
   switch (document.getElementById('units').value) {
     case 'mm':
       converter = mmToPt;
@@ -98,19 +149,34 @@ async function createPdf(tokenPages) {
     default:
       converter = mmToPt;
   }
-  switch (document.getElementById('page-format').value) {
-    case 'A4':
-      pageFormat = PDFLib.PageSizes.A4;
-      break;
-    case 'Letter':
-      pageFormat = PDFLib.PageSizes.Letter;
-      break;
-    default:
-      pageFormat = PDFLib.PageSizes.A4;
+  // Default PDF
+  if (tokenPages.length == 0) {
+    let page = pdfDoc.addPage([pageFormat.width, pageFormat.height]);
+    if (renderBorders) {
+      drawBorders(page, converter, paddingTop, paddingBottom, paddingLeft, paddingRight);
+    }
+    let circleSize = converter(parseFloat(document.getElementById('token-width').value));
+    for (let i = 0; i < 3; i++) {
+      page.drawCircle({
+        x: converter(paddingLeft) + circleSize * i + circleSize / 2,
+        y: pageFormat.height - converter(paddingTop) - circleSize / 2,
+        size: circleSize / 2,
+        color: PDFLib.rgb(0.6 + i / 10, 0.6 + i / 10, 0.6 + i / 10)
+      });
+      page.drawText('Upload tokens and click «Export to PDF»', {
+        x: converter(paddingLeft),
+        y: pageFormat.height - circleSize - 20,
+        size: 24,
+        font: await pdfDoc.embedFont(PDFLib.StandardFonts.TimesRoman)
+      });
+    }
   }
+  // Rendering
   for (let i = 0; i < tokenPages.length; i++) {
-    let page = pdfDoc.addPage(pageFormat);
-    let pageHeight = page.getHeight();
+    let page = pdfDoc.addPage([pageFormat.width, pageFormat.height]);
+    if (renderBorders) {
+      drawBorders(page, converter, paddingTop, paddingBottom, paddingLeft, paddingRight);
+    }
     // Place tokens on a doc
     for (let j = 0; j < tokenPages[i].length; j++) {
       let mimeType = tokenPages[i][j].img.split(/[\s:;]+/, 3)[1];
@@ -127,7 +193,7 @@ async function createPdf(tokenPages) {
       }
       page.drawImage(image, {
         x: converter(tokenPages[i][j].x) + converter(paddingLeft),
-        y: pageHeight - converter(tokenPages[i][j].y) - converter(tokenPages[i][j].size) - converter(paddingTop),
+        y: pageFormat.height - converter(tokenPages[i][j].y) - converter(tokenPages[i][j].size) - converter(paddingTop),
         width: converter(tokenPages[i][j].size),
         height: converter(tokenPages[i][j].size)
       });
@@ -142,8 +208,37 @@ function parseTokens() {
   // x - horizontal, y - vertical
   let pages = [];
   let sizeModifer = parseFloat(document.getElementById('token-width').value);
-  let pageWidth = parseFloat(document.getElementById('page-width').value);
-  let pageHeight = parseFloat(document.getElementById('page-height').value);
+  let paddingTop = parseFloat(document.getElementById('padding-top').value);
+  let paddingBottom = parseFloat(document.getElementById('padding-bottom').value);
+  let paddingLeft = parseFloat(document.getElementById('padding-left').value);
+  let paddingRight = parseFloat(document.getElementById('padding-right').value);
+  let converter;
+  let pageFormat;
+  switch (document.getElementById('units').value) {
+    case 'mm':
+      converter = ptToMm;
+      break;
+    case 'cm':
+      converter = ptToCm;
+      break;
+    case 'inch':
+      converter = ptToInch;
+      break;
+    default:
+      converter = ptToMm;
+  }
+  switch (document.getElementById('page-format').value) {
+    case 'A4':
+      pageFormat = pageSizes.A4;
+      break;
+    case 'Letter':
+      pageFormat = pageSizes.Letter;
+      break;
+    default:
+      pageFormat = pageSizes.A4;;
+  }
+  let pageWidth = converter(pageFormat.width) - paddingLeft - paddingRight;
+  let pageHeight = converter(pageFormat.height) - paddingTop - paddingBottom;
   let step = sizeModifer * 0.25;
   for (let t = 0; t < tokensList.length; t++) {
     for (let c = 0; c < tokensList[t].count; c++) {
@@ -213,7 +308,7 @@ function parseTokens() {
       }
     }
   }
-  createPdf(pages);
+  createPdf(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight);
 }
 
 function getID(element) {
@@ -229,6 +324,18 @@ function showTokens() {
     tokensHTML.innerHTML += `
     <div class="token-card" id="token-${i}" index="${i}">
       <table><tr>
+        <td>
+        <div>
+          <button id="card-up-${i}" class="card-move" onclick="upToken(this)">
+            <img class="card-move-img" src="img/up.png">
+          </button>
+        </div>
+        <div>
+          <button id="card-down-${i}" class="card-move" onclick="downToken(this)">
+            <img class="card-move-img" src="img/down.png">
+          </button>
+        </div>
+        </td>
         <td>
           <img class="card-img" src="${tokensList[i].img}">
         </td>
@@ -247,7 +354,7 @@ function showTokens() {
           </select>
         </td>
         <td>
-          <button id="card-delete-${i}" class="card-delete" id="card-delete-${i}"" onclick="deleteToken(this)">
+          <button id="card-delete-${i}" class="card-delete" onclick="deleteToken(this)">
             <img class="card-delete-img" src="img/delete.png">
           </button>
         </td>
@@ -270,6 +377,24 @@ function changeSize(input) {
 
 function deleteToken(button) {
   tokensList.splice(getID(button), 1);
+  showTokens();
+}
+
+function upToken(button) {
+  tokenID = getID(button);
+  if (tokenID == 0) {
+    return;
+  }
+  [tokensList[tokenID], tokensList[tokenID - 1]] = [tokensList[tokenID - 1], tokensList[tokenID]];
+  showTokens();
+}
+
+function downToken(button) {
+  tokenID = getID(button);
+  if (tokenID == tokensList.length - 1) {
+    return;
+  }
+  [tokensList[tokenID], tokensList[tokenID + 1]] = [tokensList[tokenID + 1], tokensList[tokenID]];
   showTokens();
 }
 

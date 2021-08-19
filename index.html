@@ -36,23 +36,27 @@
             </div>
             <div>
                 <label for="token-width">Medium token width</label><br>
-                <input name="token-width" id="token-width" value="27.7">
+                <input name="token-width" id="token-width" value="26.0">
             </div>
             <div>
-                <label for="page-width">Page width</label><br>
-                <input name="page-width" id="page-width" value="167">
+                <label for="padding-top">Top margin</label><br>
+                <input name="padding-top" id="padding-top" value="5.0">
             </div>
             <div>
-                <label for="page-height">Page height</label><br>
-                <input name="page-height" id="page-height" value="278">
+                <label for="padding-bottom">Bottom margin</label><br>
+                <input name="padding-bottom" id="padding-bottom" value="5.0">
             </div>
             <div>
-                <label for="padding-left">Left padding</label><br>
-                <input name="padding-left" id="padding-left" value="25">
+                <label for="padding-left">Left margin</label><br>
+                <input name="padding-left" id="padding-left" value="14.0">
             </div>
             <div>
-                <label for="padding-top">Top padding</label><br>
-                <input name="padding-top" id="padding-top" value="10">
+                <label for="padding-right">Right margin</label><br>
+                <input name="padding-right" id="padding-right" value="14.0">
+            </div>
+            <div>
+                <input type="checkbox" id="render-borders" name="render-borders" checked>
+                <label for="render-borders">Render margins</label>
             </div>
             <div>
                 <button id="export-pdf" type="button" onclick="parseTokens()">Export to PDF</button>
@@ -66,7 +70,7 @@
             <div class="tokens-list" id="tokens-list"></div>
         </div>
         <div class="preview">
-            <iframe id="pdf-viewer" class="pdf-viewer" src="img/placeholder.pdf"></iframe>
+            <iframe id="pdf-viewer" class="pdf-viewer"></iframe>
         </div>
     </div>
     <script src="js/script.js"></script>

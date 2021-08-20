@@ -62,6 +62,41 @@ function resetDefault() {
   document.getElementById('render-borders').checked = true;
 }
 
+function checkInput() {
+  let checkFloat = [
+    document.getElementById('token-width'),
+    document.getElementById('padding-top'),
+    document.getElementById('padding-bottom'),
+    document.getElementById('padding-left'),
+    document.getElementById('padding-right')
+  ];
+  let checkInt = [];
+  for (let i = 0; i < tokensList.length; i++) {
+    checkInt.push(document.getElementById(`card-count-${i}`));
+  }
+  toReturn = true;
+  for (let i = 0; i < checkFloat.length; i++) {
+    value = parseFloat(checkFloat[i].value);
+    if (isNaN(value) || value < 0) {
+      checkFloat[i].style = 'color: #ff0000';
+      toReturn = false;
+    } else {
+      checkFloat[i].style = '';
+    }
+  }
+  for (let i = 0; i < checkInt.length; i++) {
+    value = parseInt(checkInt[i].value);
+    if (isNaN(value) || value < 0) {
+      checkInt[i].style = 'color: #ff0000';
+      toReturn = false;
+    } else {
+      checkInt[i].style = '';
+    }
+  }
+  return toReturn;
+}
+
+
 function mmToPt(mm) {
   return mm * 2.83465;
 }
@@ -163,6 +198,7 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
         size: circleSize / 2,
         color: PDFLib.rgb(0.6 + i / 10, 0.6 + i / 10, 0.6 + i / 10)
       });
+      let dictionary = getDictionary();
       page.drawText('Upload tokens and click «Export to PDF»', {
         x: converter(paddingLeft),
         y: pageFormat.height - circleSize - 20,
@@ -204,6 +240,9 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
 }
 
 function parseTokens() {
+  if (!checkInput()) {
+    return;
+  }
   // Generating an array of pages and tokens on them
   // x - horizontal, y - vertical
   let pages = [];
@@ -317,7 +356,24 @@ function getID(element) {
   return lastNumber;
 }
 
+function getDictionary() {
+  let locale = document.getElementById('locale').value;
+  let dictionary;
+  switch (locale) {
+    case 'en':
+      dictionary = dictEn.tokens;
+      break;
+    case 'ru':
+      dictionary = dictRu.tokens;
+      break;
+    default:
+      dictionary = dictEn.tokens;
+  }
+  return dictionary;
+}
+
 function showTokens() {
+  let dictionary = getDictionary();
   let tokensHTML = document.getElementById('tokens-list');
   tokensHTML.innerHTML='';
   for (let i = 0; i < tokensList.length; i++) {
@@ -341,16 +397,16 @@ function showTokens() {
         </td>
         <td>
           <input type="text" class="card-input" id="card-text-${i}" value="${tokensList[i].name}" onchange="changeName(this)"><br>
-          <label for="card-count-${i}" class="card-label" onChange="changeNumber(this)">Number of copies</label><br>
+          <label for="card-count-${i}" class="card-label" onChange="changeNumber(this)">${dictionary.count}</label><br>
           <input type="number" class="card-input" id="card-count-${i}" value="${tokensList[i].count}" onchange="changeNumber(this)"><br>
-          <label for="card-size-${i}" class="card-label">Size of token</label><br>
+          <label for="card-size-${i}" class="card-label">${dictionary.size}</label><br>
           <select name="card-size-${i}" class="card-input" id="card-size-${i}" index="${i}" onchange="changeSize(this)">
-            <option value="tiny"${tokensList[i].size == 'tiny' ? ' selected' : ''}>Tiny</option>
-            <option value="small"${tokensList[i].size == 'small' ? ' selected' : ''}>Small</option>
-            <option value="medium"${tokensList[i].size == 'medium' ? ' selected' : ''}>Medium</option>
-            <option value="large"${tokensList[i].size == 'large' ? ' selected' : ''}>Large</option>
-            <option value="huge"${tokensList[i].size == 'huge' ? ' selected' : ''}>Huge</option>
-            <option value="gargantuan"${tokensList[i].size == 'gargantuan' ? ' selected' : ''}>Gargantuan</option>
+            <option value="tiny"${tokensList[i].size == 'tiny' ? ' selected' : ''}>${dictionary.tiny}</option>
+            <option value="small"${tokensList[i].size == 'small' ? ' selected' : ''}>${dictionary.small}</option>
+            <option value="medium"${tokensList[i].size == 'medium' ? ' selected' : ''}>${dictionary.medium}</option>
+            <option value="large"${tokensList[i].size == 'large' ? ' selected' : ''}>${dictionary.large}</option>
+            <option value="huge"${tokensList[i].size == 'huge' ? ' selected' : ''}>${dictionary.huge}</option>
+            <option value="gargantuan"${tokensList[i].size == 'gargantuan' ? ' selected' : ''}>${dictionary.gargantuan}</option>
           </select>
         </td>
         <td>
@@ -361,6 +417,7 @@ function showTokens() {
         </tr></table>
     </div>`;
   }
+  checkInput();
 }
 
 function changeName(input) {
@@ -368,6 +425,7 @@ function changeName(input) {
 }
 
 function changeNumber(input) {
+  checkInput();
   tokensList[getID(input)].count = parseInt(input.value);
 }
 

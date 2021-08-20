@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <title>Token sheet generator</title>
     <link rel="stylesheet" href="css/styles.css">
-    <script type="text/javascript" src="js/pdf-lib.min.js"></script>
 </head>
 <body>
     <div class="editor-wrapper">
         <div class="page-settings">
+            <div>
+                <label for="locale">Language</label>
+                <select name="locale" id="locale" onchange="switchLocale(true)">
+                    <option value="en" selected>EN</option>
+                    <option value="ru">RU</option>
+                </select>
+            </div>
             <div>
                 <button id="load-project" type="button" onclick="document.getElementById('project-loader').click()">Load project</button>
                 <input type="file" id="project-loader" accept="application/JSON" onchange="loadProject(this)" hidden>
@@ -20,43 +26,43 @@
                 <button id="reset-default" type="button" onclick="resetDefault()">Reset default settings</button>
             </div>
             <div>
-                <label for="page-format">Page format</label><br>
+                <label for="page-format" id="page-format-label">Page format</label><br>
                 <select name="page-format" id="page-format">
                     <option value="A4" selected>A4</option>
                     <option value="Letter">US letter</option>
                 </select>
             </div>
             <div>
-                <label for="units">Units</label><br>
+                <label for="units" id="units-label">Units</label><br>
                 <select name="units" id="units">
-                    <option value="mm" selected>Millimeters</option>
-                    <option value="cm">Centimeters</option>
-                    <option value="inch">Inches</option>
+                    <option id="mm" value="mm" selected>Millimeters</option>
+                    <option id="cm" value="cm">Centimeters</option>
+                    <option id=inch value="inch">Inches</option>
                 </select>
             </div>
             <div>
-                <label for="token-width">Medium token width</label><br>
-                <input name="token-width" id="token-width" value="26.0">
+                <label for="token-width" id="token-width-label">Medium token width</label><br>
+                <input name="token-width" id="token-width" value="26.0" onchange="checkInput()">
             </div>
             <div>
-                <label for="padding-top">Top margin</label><br>
-                <input name="padding-top" id="padding-top" value="5.0">
+                <label for="padding-top" id="padding-top-label">Top margin</label><br>
+                <input name="padding-top" id="padding-top" value="5.0" onchange="checkInput()">
             </div>
             <div>
-                <label for="padding-bottom">Bottom margin</label><br>
-                <input name="padding-bottom" id="padding-bottom" value="5.0">
+                <label for="padding-bottom" id="padding-bottom-label">Bottom margin</label><br>
+                <input name="padding-bottom" id="padding-bottom" value="5.0" onchange="checkInput()">
             </div>
             <div>
-                <label for="padding-left">Left margin</label><br>
-                <input name="padding-left" id="padding-left" value="14.0">
+                <label for="padding-left" id="padding-left-label">Left margin</label><br>
+                <input name="padding-left" id="padding-left" value="14.0" onchange="checkInput()">
             </div>
             <div>
-                <label for="padding-right">Right margin</label><br>
-                <input name="padding-right" id="padding-right" value="14.0">
+                <label for="padding-right" id="padding-right-label">Right margin</label><br>
+                <input name="padding-right" id="padding-right" value="14.0" onchange="checkInput()">
             </div>
             <div>
                 <input type="checkbox" id="render-borders" name="render-borders" checked>
-                <label for="render-borders">Render margins</label>
+                <label for="render-borders" id="render-borders-label">Render margins</label>
             </div>
             <div>
                 <button id="export-pdf" type="button" onclick="parseTokens()">Export to PDF</button>
@@ -73,6 +79,8 @@
             <iframe id="pdf-viewer" class="pdf-viewer"></iframe>
         </div>
     </div>
-    <script src="js/script.js"></script>
+    <script type="text/javascript" src="js/localization.js"></script>
+    <script type="text/javascript" src="js/pdf-lib.min.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>

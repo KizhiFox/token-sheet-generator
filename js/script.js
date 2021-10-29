@@ -1,6 +1,4 @@
 let tokensList = [];
-const pdfViewer = document.getElementById('pdf-viewer');
-pdfViewer.src = "img/placeholder.pdf";
 const pageSizes = {
   A4: {
     width: PDFLib.PageSizes.A4[0],
@@ -48,6 +46,7 @@ function loadProject(input) {
     document.getElementById('render-borders').checked = project.renderBorders;
     tokensList = project.tokens;
     showTokens();
+    parseTokens();
   };
 }
 
@@ -235,11 +234,15 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
       });
     }
   }
-  let pdfDataUri = await pdfDoc.saveAsBase64({ dataUri: true });
-  document.getElementById('pdf-viewer').src = pdfDataUri;
+  let pdfBinary = await pdfDoc.save();
+  let a = document.createElement('a');
+  let file = new Blob([pdfBinary], {type: 'application/pdf'});
+  a.href = URL.createObjectURL(file);
+  a.download = 'tokens.pdf';
+  a.click();
 }
 
-function parseTokens() {
+function parseTokens(exportPDF = false) {
   if (!checkInput()) {
     return;
   }
@@ -347,7 +350,89 @@ function parseTokens() {
       }
     }
   }
-  createPdf(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight);
+  convertetPageFormat = {
+    width: converter(pageFormat.width),
+    height: converter(pageFormat.height)
+  }
+  prerenderInCanvas(pages, convertetPageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight);
+  if (exportPDF) {
+    createPdf(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight);
+  }
+}
+
+function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight) {
+  canvasContainer = document.getElementById('preview');
+  scaleModifer = canvasContainer.offsetWidth / pageFormat.width;
+  canvasContainer.innerHTML = `<canvas id="canvas" width="${pageFormat.width * scaleModifer} + 5" height="${pageFormat.height * pages.length * scaleModifer} + 5"></canvas>`;
+  let canvas = document.getElementById('canvas');
+  let ctx = canvas.getContext('2d');
+  if (pages.length != 0) {
+    for (let i = 0; i < pages.length; i++) {
+      // Draw sheet borders
+      ctx.strokeStyle = 'rgb(20, 20, 20)';
+      ctx.strokeRect(0, pageFormat.height * i * scaleModifer, pageFormat.width * scaleModifer - 1, pageFormat.height * scaleModifer - 1);
+      // Draw paddings
+      ctx.strokeStyle = 'rgb(191, 191, 191)';
+      let renderBorders = document.getElementById('render-borders').checked;
+      if (renderBorders) {
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft * scaleModifer, pageFormat.height * i * scaleModifer);
+        ctx.lineTo(paddingLeft * scaleModifer, pageFormat.height * (i + 1) * scaleModifer);
+        ctx.moveTo((pageFormat.width - paddingRight) * scaleModifer, pageFormat.height * i * scaleModifer);
+        ctx.lineTo((pageFormat.width - paddingRight) * scaleModifer, pageFormat.height * (i + 1) * scaleModifer);
+        ctx.moveTo(0, (pageFormat.height * i + paddingTop) * scaleModifer);
+        ctx.lineTo(pageFormat.width * scaleModifer, (pageFormat.height * i + paddingTop) * scaleModifer);
+        ctx.moveTo(0, (pageFormat.height * (i + 1) - paddingBottom) * scaleModifer);
+        ctx.lineTo(pageFormat.width * scaleModifer, (pageFormat.height * (i + 1) - paddingBottom) * scaleModifer);
+        ctx.stroke();
+      }
+      // Draw tokens
+      for (let j = 0; j < pages[i].length; j++) {
+        let image = new Image();
+        image.onload = function() {
+          ctx.drawImage(image,
+            (paddingLeft + pages[i][j].x) * scaleModifer, (pageFormat.height * i + paddingTop + pages[i][j].y) * scaleModifer,
+            pages[i][j].size * scaleModifer, pages[i][j].size * scaleModifer);
+        }
+        image.src = pages[i][j].img;
+      }
+    }
+  } else {  // If there's no tokens
+    canvasContainer.setAttribute('height', pageFormat.height * scaleModifer);
+    canvas.height = pageFormat.height * scaleModifer + 1;
+    // Draw sheet borders
+    ctx.strokeStyle = 'rgb(20, 20, 20)';
+    ctx.strokeRect(0, 0, pageFormat.width * scaleModifer - 1, pageFormat.height * scaleModifer - 1);
+    // Draw paddings
+    ctx.strokeStyle = 'rgb(191, 191, 191)';
+    let renderBorders = document.getElementById('render-borders').checked;
+    if (renderBorders) {
+      ctx.beginPath();
+      ctx.moveTo(paddingLeft * scaleModifer, 0);
+      ctx.lineTo(paddingLeft * scaleModifer, pageFormat.height * scaleModifer);
+      ctx.moveTo((pageFormat.width - paddingRight) * scaleModifer, 0);
+      ctx.lineTo((pageFormat.width - paddingRight) * scaleModifer, pageFormat.height * scaleModifer);
+      ctx.moveTo(0, paddingTop * scaleModifer);
+      ctx.lineTo(pageFormat.width * scaleModifer, paddingTop * scaleModifer);
+      ctx.moveTo(0, (pageFormat.height - paddingBottom) * scaleModifer);
+      ctx.lineTo(pageFormat.width * scaleModifer, (pageFormat.height - paddingBottom) * scaleModifer);
+      ctx.stroke();
+    }
+    // Sample tokens
+    let circleSize = parseFloat(document.getElementById('token-width').value);
+    for (let i = 0; i < 3; i++) {
+      ctx.fillStyle = `rgb(${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255})`;
+      ctx.beginPath();
+      ctx.arc((paddingLeft + circleSize * i + circleSize / 2) * scaleModifer, (paddingTop + circleSize / 2) * scaleModifer,
+              circleSize / 2 * scaleModifer,
+              0, 2 * Math.PI);
+      ctx.fill();
+      // Text
+      ctx.fillStyle = 'black';
+      ctx.font = `${circleSize * scaleModifer * 0.25}px serif`;
+      ctx.fillText('Upload tokens and click «Export to PDF»', paddingLeft * scaleModifer, (paddingTop + circleSize) * scaleModifer);
+    }
+  }
 }
 
 function getID(element) {
@@ -382,12 +467,12 @@ function showTokens() {
       <table><tr>
         <td>
         <div>
-          <button id="card-up-${i}" class="card-move" onclick="upToken(this)">
+          <button id="card-up-${i}" class="card-move" onclick="upToken(this); parseTokens();">
             <img class="card-move-img" src="img/up.png">
           </button>
         </div>
         <div>
-          <button id="card-down-${i}" class="card-move" onclick="downToken(this)">
+          <button id="card-down-${i}" class="card-move" onclick="downToken(this); parseTokens();">
             <img class="card-move-img" src="img/down.png">
           </button>
         </div>
@@ -398,9 +483,9 @@ function showTokens() {
         <td>
           <input type="text" class="card-input" id="card-text-${i}" value="${tokensList[i].name}" onchange="changeName(this)"><br>
           <label for="card-count-${i}" class="card-label" onChange="changeNumber(this)">${dictionary.count}</label><br>
-          <input type="number" class="card-input" id="card-count-${i}" value="${tokensList[i].count}" onchange="changeNumber(this)"><br>
+          <input type="number" class="card-input" id="card-count-${i}" value="${tokensList[i].count}" onchange="changeNumber(this); parseTokens();"><br>
           <label for="card-size-${i}" class="card-label">${dictionary.size}</label><br>
-          <select name="card-size-${i}" class="card-input" id="card-size-${i}" index="${i}" onchange="changeSize(this)">
+          <select name="card-size-${i}" class="card-input" id="card-size-${i}" index="${i}" onchange="changeSize(this); parseTokens();">
             <option value="tiny"${tokensList[i].size == 'tiny' ? ' selected' : ''}>${dictionary.tiny}</option>
             <option value="small"${tokensList[i].size == 'small' ? ' selected' : ''}>${dictionary.small}</option>
             <option value="medium"${tokensList[i].size == 'medium' ? ' selected' : ''}>${dictionary.medium}</option>
@@ -410,7 +495,7 @@ function showTokens() {
           </select>
         </td>
         <td>
-          <button id="card-delete-${i}" class="card-delete" onclick="deleteToken(this)">
+          <button id="card-delete-${i}" class="card-delete" onclick="deleteToken(this); parseTokens();">
             <img class="card-delete-img" src="img/delete.png">
           </button>
         </td>

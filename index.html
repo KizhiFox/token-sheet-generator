@@ -23,18 +23,18 @@
                 <button id="save-project" type="button" onclick="exportProject()">Save project</button>
             </div>
             <div>
-                <button id="reset-default" type="button" onclick="resetDefault()">Reset default settings</button>
+                <button id="reset-default" type="button" onclick="resetDefault(); parseTokens();">Reset default settings</button>
             </div>
             <div>
                 <label for="page-format" id="page-format-label">Page format</label><br>
-                <select name="page-format" id="page-format">
+                <select name="page-format" id="page-format" onchange="parseTokens();">
                     <option value="A4" selected>A4</option>
                     <option value="Letter">US letter</option>
                 </select>
             </div>
             <div>
                 <label for="units" id="units-label">Units</label><br>
-                <select name="units" id="units">
+                <select name="units" id="units" onchange="parseTokens();">
                     <option id="mm" value="mm" selected>Millimeters</option>
                     <option id="cm" value="cm">Centimeters</option>
                     <option id=inch value="inch">Inches</option>
@@ -42,30 +42,30 @@
             </div>
             <div>
                 <label for="token-width" id="token-width-label">Medium token width</label><br>
-                <input name="token-width" id="token-width" value="26.0" onchange="checkInput()">
+                <input name="token-width" id="token-width" value="26.0" onchange="checkInput(); parseTokens();">
             </div>
             <div>
                 <label for="padding-top" id="padding-top-label">Top margin</label><br>
-                <input name="padding-top" id="padding-top" value="5.0" onchange="checkInput()">
+                <input name="padding-top" id="padding-top" value="5.0" onchange="checkInput(); parseTokens();">
             </div>
             <div>
                 <label for="padding-bottom" id="padding-bottom-label">Bottom margin</label><br>
-                <input name="padding-bottom" id="padding-bottom" value="5.0" onchange="checkInput()">
+                <input name="padding-bottom" id="padding-bottom" value="5.0" onchange="checkInput(); parseTokens();">
             </div>
             <div>
                 <label for="padding-left" id="padding-left-label">Left margin</label><br>
-                <input name="padding-left" id="padding-left" value="14.0" onchange="checkInput()">
+                <input name="padding-left" id="padding-left" value="14.0" onchange="checkInput(); parseTokens();">
             </div>
             <div>
                 <label for="padding-right" id="padding-right-label">Right margin</label><br>
-                <input name="padding-right" id="padding-right" value="14.0" onchange="checkInput()">
+                <input name="padding-right" id="padding-right" value="14.0" onchange="checkInput(); parseTokens();">
             </div>
             <div>
-                <input type="checkbox" id="render-borders" name="render-borders" checked>
+                <input type="checkbox" id="render-borders" name="render-borders" checked onchange="parseTokens();">
                 <label for="render-borders" id="render-borders-label">Render margins</label>
             </div>
             <div>
-                <button id="export-pdf" type="button" onclick="parseTokens()">Export to PDF</button>
+                <button id="export-pdf" type="button" onclick="parseTokens(true)">Export to PDF</button>
             </div>
         </div>
         <div class="tokens-list">
@@ -75,8 +75,7 @@
             </div>
             <div class="tokens-list" id="tokens-list"></div>
         </div>
-        <div class="preview">
-            <iframe id="pdf-viewer" class="pdf-viewer"></iframe>
+        <div id="preview" class="preview">
         </div>
     </div>
     <script type="text/javascript" src="js/localization.js"></script>

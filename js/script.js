@@ -548,8 +548,8 @@ function uploadTokens(input) {
     reader.readAsDataURL(file);
     reader.onload = function(event) {
       tokensList.push({name: file.name, count: 1, size: 'medium', img: event.target.result});
+      showTokens();
+      parseTokens();
     };
   }
-  showTokens();
-  parseTokens();
 }

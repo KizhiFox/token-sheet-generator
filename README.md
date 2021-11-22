@@ -14,6 +14,10 @@ App: https://kizhifox.github.io/token-sheet-generator/
 
 ![Screenshot of the program](screenshot.png)
 
+Export result:
+
+![Screenshot of the program](screenshotPDF.png)
+
 ## Version history
 
 * *0.1 Project start:*

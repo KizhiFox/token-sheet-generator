@@ -75,8 +75,18 @@
             </div>
             <div class="tokens-list" id="tokens-list"></div>
         </div>
-        <div id="preview" class="preview">
+        <div id="preview-wrapper" class="preview-wrapper">
+            <div id="preview" class="preview">
+            </div>
         </div>
+    </div>
+    <div id="scale-controls" class="scale-controls">
+        <button id="scale-plus" class="scale-button scale-plus" onclick="scalePlus();">
+            <img class="scale-button-img" src="img/plus.png">
+        </button>
+        <button id="scale-minus" class="scale-button scale-minus" onclick="scaleMinus();">
+            <img class="scale-button-img" src="img/minus.png">
+        </button>
     </div>
     <script type="text/javascript" src="js/localization.js"></script>
     <script type="text/javascript" src="js/pdf-lib.min.js"></script>

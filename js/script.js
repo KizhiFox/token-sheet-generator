@@ -1,4 +1,5 @@
 let tokensList = [];
+let currentScale = 100;
 const pageSizes = {
   A4: {
     width: PDFLib.PageSizes.A4[0],
@@ -363,7 +364,7 @@ function parseTokens(exportPDF = false) {
 function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight) {
   canvasContainer = document.getElementById('preview');
   scaleModifer = canvasContainer.offsetWidth / pageFormat.width;
-  canvasContainer.innerHTML = `<canvas id="canvas" width="${pageFormat.width * scaleModifer} + 5" height="${pageFormat.height * pages.length * scaleModifer} + 5"></canvas>`;
+  canvasContainer.innerHTML = `<canvas id="canvas" class="canvas" width="${pageFormat.width * scaleModifer} + 5" height="${pageFormat.height * pages.length * scaleModifer} + 5"></canvas>`;
   let canvas = document.getElementById('canvas');
   let ctx = canvas.getContext('2d');
   if (pages.length != 0) {
@@ -552,4 +553,24 @@ function uploadTokens(input) {
       parseTokens();
     };
   }
+}
+
+function scalePlus() {
+  currentScale += 10;
+  if (currentScale > 100)
+    currentScale = 100;
+  document.getElementById('preview').setAttribute('style', `width: ${currentScale}%`);
+  document.getElementById('preview').style.width=`${currentScale}%`;
+  document.getElementById('canvas').setAttribute('style', 'width: 100%');
+  document.getElementById('canvas').style.width='100%';
+}
+
+function scaleMinus() {
+  currentScale -= 10;
+  if (currentScale < 10)
+    currentScale = 10;
+  document.getElementById('preview').setAttribute('style', `width: ${currentScale}%`);
+  document.getElementById('preview').style.width=`${currentScale}%`;
+  document.getElementById('canvas').setAttribute('style', 'width: 100%');
+  document.getElementById('canvas').style.width='100%';
 }

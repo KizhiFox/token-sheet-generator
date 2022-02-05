@@ -8,9 +8,11 @@ App: https://kizhifox.github.io/token-sheet-generator/
 
 ## To do
 
-1. Drag to reorder tokens.
-2. Site design.
-3. Mobile design.
+1. Anumation to PDF export;
+2. Drag and drop to load project;
+3. Drag to reorder tokens;
+4. Site design;
+5. Mobile design.
 
 ![Screenshot of the program](screenshot.png)
 

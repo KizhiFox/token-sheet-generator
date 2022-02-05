@@ -5,7 +5,7 @@
     <title>Token sheet generator</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
-<body>
+<body id='body'>
     <div class="editor-wrapper">
         <div class="page-settings">
             <div>
@@ -67,6 +67,9 @@
             <div>
                 <button id="export-pdf" type="button" onclick="parseTokens(true)">Export to PDF</button>
             </div>
+            <a href="https://github.com/KizhiFox/token-sheet-generator" class="github-badge">
+                <img src="https://img.shields.io/badge/GitHub-KizhiFox%20%2F%20token--sheet--generator-blue?logo=GitHub" alt="GitHub link">
+            </a>
         </div>
         <div class="tokens-list">
             <div>
@@ -76,8 +79,8 @@
             <div class="tokens-list" id="tokens-list"></div>
         </div>
         <div id="preview-wrapper" class="preview-wrapper">
-            <div id="preview" class="preview">
-            </div>
+            <div id="preview" class="preview"></div>
+            <div id="dragndrop-zone" class="dragndrop-zone">Drop files here to upload</div>
         </div>
     </div>
     <div id="scale-controls" class="scale-controls">
@@ -88,8 +91,12 @@
             <img class="scale-button-img" src="img/minus.png">
         </button>
     </div>
+    <div class="loading-background" id="loading-background">
+        <div class="loading-animation"></div>
+    </div>
     <script type="text/javascript" src="js/localization.js"></script>
     <script type="text/javascript" src="js/pdf-lib.min.js"></script>
     <script type="text/javascript" src="js/script.js"></script>
+    <script type="text/javascript" src="js/dragndrop.js"></script>
 </body>
 </html>

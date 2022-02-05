@@ -15,7 +15,8 @@ const dictEn = {
     'padding-right-label': 'Right margin',
     'render-borders-label': 'Render margins',
     'export-pdf': 'Export to PDF',
-    'add-token': 'Upload tokens'
+    'add-token': 'Upload tokens',
+    'dragndrop-zone': 'Drop files here to upload'
   },
   'tokens': {
       'count': 'Number of copies',
@@ -47,7 +48,8 @@ const dictRu = {
     'padding-right-label': 'Отступ справа',
     'render-borders-label': 'Отрисовывать отступы',
     'export-pdf': 'Экспорт в PDF',
-    'add-token': 'Загрузить токены'
+    'add-token': 'Загрузить токены',
+    'dragndrop-zone': 'Отпустите файлы здесь, чтобы загрузить'
   },
   'tokens': {
       'count': 'Количество копий',

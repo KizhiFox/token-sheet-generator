@@ -48,3 +48,51 @@
 .card-move-img {
     width: 15px;
 }
+.loading-background {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(150, 150, 150, 0.5);
+    display: none;
+    align-items: center;
+    
+}
+.loading-animation {
+    margin: auto;
+    border: 10px solid #EAF0F6;
+    border-radius: 50%;
+    border-top: 10px solid #009607;
+    width: 100px;
+    height: 100px;
+    animation: spinner 1s linear infinite;
+}
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.github-badge {
+    position:absolute;
+    bottom: 0;
+}
+.dragndrop-zone.dragstart {
+    opacity: 0.5;
+}
+.dragndrop-zone.dragover {
+    opacity: 1;
+}
+.dragndrop-zone {
+    opacity: 0;
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: red;
+    background-color: rgba(150, 150, 150, 0.25);
+}

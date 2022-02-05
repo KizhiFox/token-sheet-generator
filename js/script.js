@@ -543,16 +543,31 @@ function downToken(button) {
 }
 
 function uploadTokens(input) {
-  for (let i = 0; i < input.files.length; i++) {
-    let file = input.files.item(i);
-    let reader = new FileReader();
+  document.getElementById('loading-background').style['display'] = 'flex';
+  newTokens = [];
+  var reader = new FileReader();  
+  function readFile(index, _callback) {
+    if(index >= input.files.length) {
+      _callback();
+      return;
+    };
+    var file = input.files[index];
+    reader.onload = function(e) {
+      newTokens.push({name: file.name, count: 1, size: 'medium', img: e.target.result});
+      readFile(index + 1, _callback)
+    }
     reader.readAsDataURL(file);
-    reader.onload = function(event) {
-      tokensList.push({name: file.name, count: 1, size: 'medium', img: event.target.result});
+  }
+  readFile(
+    0,
+    function() {
+      console.log(newTokens);
+      tokensList.push.apply(tokensList, newTokens);
       showTokens();
       parseTokens();
-    };
-  }
+      document.getElementById('loading-background').style['display'] = 'none';
+    }
+  );
 }
 
 function scalePlus() {

@@ -14,7 +14,7 @@ App: https://kizhifox.github.io/token-sheet-generator/
 4. Site design;
 5. Mobile design.
 
-![Screenshot of the program](screenshot.png)
+![Screenshot of the program](screenshotv0_7.png)
 
 Export result:
 

@@ -8,7 +8,7 @@ App: https://kizhifox.github.io/token-sheet-generator/
 
 ## To do
 
-1. Anumation to PDF export;
+1. Animation for PDF export;
 2. Drag and drop to load project;
 3. Drag to reorder tokens;
 4. Site design;

@@ -96,3 +96,33 @@
     color: red;
     background-color: rgba(150, 150, 150, 0.25);
 }
+ul.sortable {
+    display: block; 
+    list-style: none; 
+    background: #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    margin: 20px 0;
+    padding: 5px;
+}
+    
+li {
+    display: block;
+    margin: 1px; 
+    padding: 10px;
+    border-radius: 4px;
+    cursor: move;
+    background: #fff;
+}
+    
+li:hover {
+    background: #ffffe0;
+}
+li.active {
+    background: #ccc;
+}
+li.dragging {
+    background: #e0ffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    opacity: 0.5;
+}

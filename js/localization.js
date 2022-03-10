@@ -19,15 +19,15 @@ const dictEn = {
     'dragndrop-zone': 'Drop files here to upload'
   },
   'tokens': {
-      'count': 'Number of copies',
-      'size':  'Size of token',
-      'tiny': 'Tiny',
-      'small': 'Small',
-      'medium': 'Medium',
-      'large': 'Large',
-      'huge': 'Huge',
-      'gargantuan': 'Gargantuan',
-      'placeholder': 'Upload tokens and click «Export to PDF»'
+    'count': 'Number of copies',
+    'size': 'Size of token',
+    'tiny': 'Tiny',
+    'small': 'Small',
+    'medium': 'Medium',
+    'large': 'Large',
+    'huge': 'Huge',
+    'gargantuan': 'Gargantuan',
+    'placeholder': 'Upload tokens and click «Export to PDF»'
 
   }
 };
@@ -52,15 +52,15 @@ const dictRu = {
     'dragndrop-zone': 'Отпустите файлы здесь, чтобы загрузить'
   },
   'tokens': {
-      'count': 'Количество копий',
-      'size':  'Размер токена',
-      'tiny': 'Крошечный',
-      'small': 'Маленький',
-      'medium': 'Средний',
-      'large': 'Большой',
-      'huge': 'Огромный',
-      'gargantuan': 'Громадный',
-      'placeholder': 'Загрузи токены и нажми Экспорт в PDF»'
+    'count': 'Количество копий',
+    'size': 'Размер токена',
+    'tiny': 'Крошечный',
+    'small': 'Маленький',
+    'medium': 'Средний',
+    'large': 'Большой',
+    'huge': 'Огромный',
+    'gargantuan': 'Громадный',
+    'placeholder': 'Загрузи токены и нажми Экспорт в PDF»'
 
   }
 };
@@ -68,7 +68,7 @@ const dictRu = {
 const availableLanguages = ['en', 'ru'];
 let isDefaultLang = true;
 for (let i = 0; i < navigator.languages.length; i++) {
-    lang = navigator.languages[i].split('-')[0];
+  lang = navigator.languages[i].split('-')[0];
   if (availableLanguages.includes(lang)) {
     document.getElementById('locale').value = lang;
     isDefaultLang = false;
@@ -76,7 +76,7 @@ for (let i = 0; i < navigator.languages.length; i++) {
   }
 }
 if (isDefaultLang) {
-    document.getElementById('locale').value = en;
+  document.getElementById('locale').value = en;
 }
 switchLocale(false);
 
@@ -92,10 +92,10 @@ function switchLocale(updateTokens) {
     default:
       dictionary = dictEn;
   }
-  Object.keys(dictionary.page).forEach(function(key) {
+  Object.keys(dictionary.page).forEach(function (key) {
     document.getElementById(key).innerHTML = dictionary.page[key];
   });
-  if (updateTokens){
+  if (updateTokens) {
     showTokens();
   }
 }

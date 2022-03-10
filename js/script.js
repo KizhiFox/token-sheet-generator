@@ -25,7 +25,7 @@ function exportProject() {
     tokens: tokensList
   };
   let a = document.createElement('a');
-  let file = new Blob([JSON.stringify(toExport, null, 2)], {type: 'application/json'});
+  let file = new Blob([JSON.stringify(toExport, null, 2)], { type: 'application/json' });
   a.href = URL.createObjectURL(file);
   a.download = 'tokens.json';
   a.click();
@@ -35,7 +35,7 @@ function loadProject(input) {
   let file = input.files.item(0);
   let reader = new FileReader();
   reader.readAsText(file);
-  reader.onload = function(event) {
+  reader.onload = function (event) {
     project = JSON.parse(event.target.result);
     document.getElementById('page-format').value = project.pageFormat;
     document.getElementById('units').value = project.units;
@@ -237,7 +237,7 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
   }
   let pdfBinary = await pdfDoc.save();
   let a = document.createElement('a');
-  let file = new Blob([pdfBinary], {type: 'application/pdf'});
+  let file = new Blob([pdfBinary], { type: 'application/pdf' });
   a.href = URL.createObjectURL(file);
   a.download = 'tokens.pdf';
   a.click();
@@ -330,7 +330,7 @@ function parseTokens(exportPDF = false) {
               }
               // Plase token if there's no intersections
               if (!isIntersection) {
-                pages[i].push({x: x, y: y, size: tokenSize, img: tokensList[t].img});
+                pages[i].push({ x: x, y: y, size: tokenSize, img: tokensList[t].img });
                 isPlaced = true;
                 break;
               }
@@ -345,7 +345,7 @@ function parseTokens(exportPDF = false) {
         }
         // Create new page if there's no more free space
         if (!isPlaced) {
-          pages.push([{x: 0.0, y: 0.0, size: tokenSize, img: tokensList[t].img}]);
+          pages.push([{ x: 0.0, y: 0.0, size: tokenSize, img: tokensList[t].img }]);
           isPlaced = true;
         }
       }
@@ -390,7 +390,7 @@ function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, padding
       // Draw tokens
       for (let j = 0; j < pages[i].length; j++) {
         let image = new Image();
-        image.onload = function() {
+        image.onload = function () {
           ctx.drawImage(image,
             (paddingLeft + pages[i][j].x) * scaleModifer, (pageFormat.height * i + paddingTop + pages[i][j].y) * scaleModifer,
             pages[i][j].size * scaleModifer, pages[i][j].size * scaleModifer);
@@ -425,8 +425,8 @@ function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, padding
       ctx.fillStyle = `rgb(${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255})`;
       ctx.beginPath();
       ctx.arc((paddingLeft + circleSize * i + circleSize / 2) * scaleModifer, (paddingTop + circleSize / 2) * scaleModifer,
-              circleSize / 2 * scaleModifer,
-              0, 2 * Math.PI);
+        circleSize / 2 * scaleModifer,
+        0, 2 * Math.PI);
       ctx.fill();
       // Text
       ctx.fillStyle = 'black';
@@ -461,23 +461,11 @@ function getDictionary() {
 function showTokens() {
   let dictionary = getDictionary();
   let tokensHTML = document.getElementById('tokens-list');
-  tokensHTML.innerHTML='';
+  tokensHTML.innerHTML = '';
   for (let i = 0; i < tokensList.length; i++) {
     tokensHTML.innerHTML += `
-    <div class="token-card" id="token-${i}" index="${i}">
+    <li class="token-card" id="token-${i}" index="${i}">
       <table><tr>
-        <td>
-        <div>
-          <button id="card-up-${i}" class="card-move" onclick="upToken(this); parseTokens();">
-            <img class="card-move-img" src="img/up.png">
-          </button>
-        </div>
-        <div>
-          <button id="card-down-${i}" class="card-move" onclick="downToken(this); parseTokens();">
-            <img class="card-move-img" src="img/down.png">
-          </button>
-        </div>
-        </td>
         <td>
           <img class="card-img" src="${tokensList[i].img}">
         </td>
@@ -501,7 +489,7 @@ function showTokens() {
           </button>
         </td>
         </tr></table>
-    </div>`;
+    </li>`;
   }
   checkInput();
 }
@@ -542,26 +530,31 @@ function downToken(button) {
   showTokens();
 }
 
+function reorderTokens(newOrder) {
+  tokensList = newOrder.map(i => tokensList[i]);
+  showTokens();
+  parseTokens();
+}
+
 function uploadTokens(input) {
   document.getElementById('loading-background').style['display'] = 'flex';
   newTokens = [];
-  var reader = new FileReader();  
+  var reader = new FileReader();
   function readFile(index, _callback) {
-    if(index >= input.files.length) {
+    if (index >= input.files.length) {
       _callback();
       return;
     };
     var file = input.files[index];
-    reader.onload = function(e) {
-      newTokens.push({name: file.name, count: 1, size: 'medium', img: e.target.result});
+    reader.onload = function (e) {
+      newTokens.push({ name: file.name, count: 1, size: 'medium', img: e.target.result });
       readFile(index + 1, _callback)
     }
     reader.readAsDataURL(file);
   }
   readFile(
     0,
-    function() {
-      console.log(newTokens);
+    function () {
       tokensList.push.apply(tokensList, newTokens);
       showTokens();
       parseTokens();
@@ -575,9 +568,9 @@ function scalePlus() {
   if (currentScale > 100)
     currentScale = 100;
   document.getElementById('preview').setAttribute('style', `width: ${currentScale}%`);
-  document.getElementById('preview').style.width=`${currentScale}%`;
+  document.getElementById('preview').style.width = `${currentScale}%`;
   document.getElementById('canvas').setAttribute('style', 'width: 100%');
-  document.getElementById('canvas').style.width='100%';
+  document.getElementById('canvas').style.width = '100%';
 }
 
 function scaleMinus() {
@@ -585,7 +578,7 @@ function scaleMinus() {
   if (currentScale < 10)
     currentScale = 10;
   document.getElementById('preview').setAttribute('style', `width: ${currentScale}%`);
-  document.getElementById('preview').style.width=`${currentScale}%`;
+  document.getElementById('preview').style.width = `${currentScale}%`;
   document.getElementById('canvas').setAttribute('style', 'width: 100%');
-  document.getElementById('canvas').style.width='100%';
+  document.getElementById('canvas').style.width = '100%';
 }

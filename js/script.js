@@ -32,6 +32,7 @@ function exportProject() {
 }
 
 function loadProject(input) {
+  document.getElementById('loading-background').style['display'] = 'flex';
   let file = input.files.item(0);
   let reader = new FileReader();
   reader.readAsText(file);
@@ -49,6 +50,7 @@ function loadProject(input) {
     showTokens();
     parseTokens();
   };
+  document.getElementById('loading-background').style['display'] = 'none';
 }
 
 function resetDefault() {
@@ -241,11 +243,15 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
   a.href = URL.createObjectURL(file);
   a.download = 'tokens.pdf';
   a.click();
+  document.getElementById('loading-background').style['display'] = 'none';
 }
 
 function parseTokens(exportPDF = false) {
   if (!checkInput()) {
     return;
+  }
+  if (exportPDF) {
+    document.getElementById('loading-background').style['display'] = 'flex';
   }
   // Generating an array of pages and tokens on them
   // x - horizontal, y - vertical
@@ -470,7 +476,7 @@ function showTokens() {
           <img class="card-img" src="${tokensList[i].img}">
         </td>
         <td>
-          <input type="text" class="card-input" id="card-text-${i}" value="${tokensList[i].name}" onchange="changeName(this)"><br>
+          <input type="text" class="card-input" id="card-text-${i}" value="${tokensList[i].name}" onchange="changeName(this);"><br>
           <label for="card-count-${i}" class="card-label" onChange="changeNumber(this)">${dictionary.count}</label><br>
           <input type="number" class="card-input" id="card-count-${i}" value="${tokensList[i].count}" onchange="changeNumber(this); parseTokens();"><br>
           <label for="card-size-${i}" class="card-label">${dictionary.size}</label><br>

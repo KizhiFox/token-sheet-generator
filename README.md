@@ -1,15 +1,10 @@
 # Token sheet generator
 
-*version 0.8*
+*version 1.0*
 
 This app places tabletop RPG tokens on a PDF sheets, which helps save time in preparing for printing.
 
 App: https://kizhifox.github.io/token-sheet-generator/
-
-## To do
-
-1. Animation for PDF export;
-2. Site design.
 
 ![Screenshot of the program](screenshotv0_7.png)
 
@@ -48,3 +43,5 @@ Export result:
 * *0.8:*
   1. Load projects with drag and drop;
   2. Reorder tokens with drag and drop.
+* *1.0:*
+  1. Simple design.

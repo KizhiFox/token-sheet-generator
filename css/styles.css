@@ -1,3 +1,7 @@
+body {
+    font-family: Georgia, serif;
+    font-size: 18px;
+}
 .editor-wrapper {
     display: grid;
     grid-template-columns: 1fr 2fr 5fr;
@@ -22,10 +26,6 @@
     top: 10px;
     left: 36%;
 }
-.scale-button {
-    display: flex;
-    width: 40px;
-}
 .scale-button-img {
     width: 100%;
 }
@@ -43,7 +43,7 @@
     width: 100px;
 }
 .card-delete-img {
-    width: 30px;
+    width: 100%;
 }
 .card-move-img {
     width: 15px;
@@ -96,10 +96,12 @@
     color: red;
     background-color: rgba(150, 150, 150, 0.25);
 }
+ul {
+    padding: 0;
+}
 ul.sortable {
-    display: block; 
-    list-style: none; 
-    background: #e0e0e0;
+    display: block;
+    list-style: none;
     border-radius: 4px;
     box-shadow: 0 0 40px rgba(0,0,0,0.4);
     margin: 20px 0;
@@ -107,12 +109,14 @@ ul.sortable {
 }
     
 li {
-    display: block;
+    display: table;
+    width: 90%;
     margin: 1px; 
     padding: 10px;
-    border-radius: 4px;
+    border: solid 1px gray;
+    border-radius: 10px;
     cursor: move;
-    background: #fff;
+    background: #eeeeee;
 }
     
 li:hover {
@@ -125,4 +129,51 @@ li.dragging {
     background: #e0ffff;
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     opacity: 0.5;
+}
+table {
+    width: 100%;
+}
+input[type=text], input[type=number], select, button {
+    height: 24px;
+    border: solid 1px gray;
+    padding-left: 10px;
+    border-radius: 5px;
+    width: 90%;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    background-color: white;
+}
+button {
+    background-color: #eeeeee;
+    width: auto;
+    height: 30px;
+    padding: 5px;
+}
+button:hover {
+    background-color: #dddddd;
+}
+button:active {
+    background-color: #cccccc;
+}
+#locale {
+    width: auto;
+    padding: 0;
+}
+.scale-button {
+    display: flex;
+    width: 40px;
+    height: 40px;
+}
+.card-delete {
+    height: 50px;
+    width: 50px;
+}
+#export-pdf {
+    height: 40px;
+    margin-top: 10px;
+    font-size: 18px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-color: #880000;
+    border-width: 2px;
 }

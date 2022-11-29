@@ -45,3 +45,5 @@ Export result:
   2. Reorder tokens with drag and drop.
 * *1.0:*
   1. Simple design.
+* *1.1:*
+  1. Added .webp and .gif support, fixed error with some .jpeg images. All uploaded images now are just converting to .png.

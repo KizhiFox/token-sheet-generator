@@ -553,8 +553,18 @@ function uploadTokens(input) {
     };
     var file = input.files[index];
     reader.onload = function (e) {
-      newTokens.push({ name: file.name, count: 1, size: 'medium', img: e.target.result });
-      readFile(index + 1, _callback)
+      let image = new Image();
+      image.onload = function () {
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
+        canvas.height = image.height;
+        canvas.width = image.width;
+        ctx.drawImage(image, 0, 0);
+        convertedImage = canvas.toDataURL('image/png', 1.0);
+        newTokens.push({ name: file.name, count: 1, size: 'medium', img: convertedImage });
+        readFile(index + 1, _callback);
+      }
+      image.src = e.target.result;
     }
     reader.readAsDataURL(file);
   }

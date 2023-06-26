@@ -47,3 +47,6 @@ Export result:
   1. Simple design.
 * *1.1:*
   1. Added .webp and .gif support, fixed error with some .jpeg images. All uploaded images now are just converting to .png.
+* *1.1.1:*
+  1. Boosty and Mastodon links.
+

@@ -67,6 +67,7 @@ function resetDefault() {
 function checkInput() {
   let checkFloat = [
     document.getElementById('token-width'),
+    document.getElementById('token-padding'),
     document.getElementById('padding-top'),
     document.getElementById('padding-bottom'),
     document.getElementById('padding-left'),
@@ -169,7 +170,7 @@ function drawBorders(page, converter, paddingTop, paddingBottom, paddingLeft, pa
   });
 }
 
-async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight) {
+async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight, tokenPadding) {
   let renderBorders = document.getElementById('render-borders').checked;
   let pdfDoc = await PDFLib.PDFDocument.create();
   let converter;
@@ -195,12 +196,11 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
     let circleSize = converter(parseFloat(document.getElementById('token-width').value));
     for (let i = 0; i < 3; i++) {
       page.drawCircle({
-        x: converter(paddingLeft) + circleSize * i + circleSize / 2,
-        y: pageFormat.height - converter(paddingTop) - circleSize / 2,
+        x: converter(paddingLeft) + circleSize * i + circleSize / 2 + converter(tokenPadding / 2 * (i + 1)),
+        y: pageFormat.height - converter(paddingTop) - circleSize / 2 - converter(tokenPadding / 2),
         size: circleSize / 2,
         color: PDFLib.rgb(0.6 + i / 10, 0.6 + i / 10, 0.6 + i / 10)
       });
-      let dictionary = getDictionary();
       page.drawText('Upload tokens and click «Export to PDF»', {
         x: converter(paddingLeft),
         y: pageFormat.height - circleSize - 20,
@@ -230,10 +230,10 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
           image = null;
       }
       page.drawImage(image, {
-        x: converter(tokenPages[i][j].x) + converter(paddingLeft),
-        y: pageFormat.height - converter(tokenPages[i][j].y) - converter(tokenPages[i][j].size) - converter(paddingTop),
-        width: converter(tokenPages[i][j].size),
-        height: converter(tokenPages[i][j].size)
+        x: converter(tokenPages[i][j].x + tokenPadding / 2) + converter(paddingLeft),
+        y: pageFormat.height - converter(tokenPages[i][j].y - tokenPadding / 2) - converter(tokenPages[i][j].size) - converter(paddingTop),
+        width: converter(tokenPages[i][j].size - tokenPadding),
+        height: converter(tokenPages[i][j].size - tokenPadding)
       });
     }
   }
@@ -256,11 +256,12 @@ function parseTokens(exportPDF = false) {
   // Generating an array of pages and tokens on them
   // x - horizontal, y - vertical
   let pages = [];
-  let sizeModifer = parseFloat(document.getElementById('token-width').value);
   let paddingTop = parseFloat(document.getElementById('padding-top').value);
   let paddingBottom = parseFloat(document.getElementById('padding-bottom').value);
   let paddingLeft = parseFloat(document.getElementById('padding-left').value);
   let paddingRight = parseFloat(document.getElementById('padding-right').value);
+  let tokenPadding = parseFloat(document.getElementById('token-padding').value);
+  let sizeModifer = parseFloat(document.getElementById('token-width').value) + tokenPadding;
   let converter;
   let pageFormat;
   switch (document.getElementById('units').value) {
@@ -334,7 +335,7 @@ function parseTokens(exportPDF = false) {
                   }
                 }
               }
-              // Plase token if there's no intersections
+              // Place token if there's no intersections
               if (!isIntersection) {
                 pages[i].push({ x: x, y: y, size: tokenSize, img: tokensList[t].img });
                 isPlaced = true;
@@ -361,13 +362,13 @@ function parseTokens(exportPDF = false) {
     width: converter(pageFormat.width),
     height: converter(pageFormat.height)
   }
-  prerenderInCanvas(pages, convertetPageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight);
+  prerenderInCanvas(pages, convertetPageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight, tokenPadding);
   if (exportPDF) {
-    createPdf(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight);
+    createPdf(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight, tokenPadding);
   }
 }
 
-function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight) {
+function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, paddingLeft, paddingRight, tokenPadding) {
   canvasContainer = document.getElementById('preview');
   scaleModifer = canvasContainer.offsetWidth / pageFormat.width;
   canvasContainer.innerHTML = `<canvas id="canvas" class="canvas" width="${pageFormat.width * scaleModifer} + 5" height="${pageFormat.height * pages.length * scaleModifer} + 5"></canvas>`;
@@ -398,8 +399,8 @@ function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, padding
         let image = new Image();
         image.onload = function () {
           ctx.drawImage(image,
-            (paddingLeft + pages[i][j].x) * scaleModifer, (pageFormat.height * i + paddingTop + pages[i][j].y) * scaleModifer,
-            pages[i][j].size * scaleModifer, pages[i][j].size * scaleModifer);
+            (paddingLeft + pages[i][j].x + tokenPadding / 2) * scaleModifer, (pageFormat.height * i + paddingTop + pages[i][j].y + tokenPadding / 2) * scaleModifer,
+            (pages[i][j].size - tokenPadding) * scaleModifer, (pages[i][j].size - tokenPadding) * scaleModifer);
         }
         image.src = pages[i][j].img;
       }
@@ -430,7 +431,7 @@ function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, padding
     for (let i = 0; i < 3; i++) {
       ctx.fillStyle = `rgb(${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255})`;
       ctx.beginPath();
-      ctx.arc((paddingLeft + circleSize * i + circleSize / 2) * scaleModifer, (paddingTop + circleSize / 2) * scaleModifer,
+      ctx.arc((paddingLeft + circleSize * i + circleSize / 2 + (tokenPadding * (i + 1))) * scaleModifer, (paddingTop + circleSize / 2 + tokenPadding) * scaleModifer,
         circleSize / 2 * scaleModifer,
         0, 2 * Math.PI);
       ctx.fill();

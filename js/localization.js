@@ -13,7 +13,8 @@ const dictEn = {
     'padding-bottom-label': 'Bottom margin',
     'padding-left-label': 'Left margin',
     'padding-right-label': 'Right margin',
-    'render-borders-label': 'Render margins',
+    'token-padding-label': 'Token padding',
+    'render-borders-label': 'Render margins from the edge of the sheet',
     'export-pdf': 'Export to PDF',
     'add-token': 'Upload tokens',
     'dragndrop-zone': 'Drop files here to upload'
@@ -26,8 +27,7 @@ const dictEn = {
     'medium': 'Medium',
     'large': 'Large',
     'huge': 'Huge',
-    'gargantuan': 'Gargantuan',
-    'placeholder': 'Upload tokens and click «Export to PDF»'
+    'gargantuan': 'Gargantuan'
 
   }
 };
@@ -46,7 +46,8 @@ const dictRu = {
     'padding-bottom-label': 'Отступ снизу',
     'padding-left-label': 'Отступ слева',
     'padding-right-label': 'Отступ справа',
-    'render-borders-label': 'Отрисовывать отступы',
+    'token-padding-label': 'Отступ вокруг токена',
+    'render-borders-label': 'Отрисовывать отступы от края листа',
     'export-pdf': 'Экспорт в PDF',
     'add-token': 'Загрузить токены',
     'dragndrop-zone': 'Отпустите файлы здесь, чтобы загрузить'
@@ -59,8 +60,7 @@ const dictRu = {
     'medium': 'Средний',
     'large': 'Большой',
     'huge': 'Огромный',
-    'gargantuan': 'Громадный',
-    'placeholder': 'Загрузи токены и нажми Экспорт в PDF»'
+    'gargantuan': 'Громадный'
 
   }
 };

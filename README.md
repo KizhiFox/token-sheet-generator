@@ -1,6 +1,6 @@
 # Token sheet generator
 
-*version 1.1.1*
+*version 1.2*
 
 This app places tabletop RPG tokens on a PDF sheets, which helps save time in preparing for printing.
 
@@ -49,4 +49,5 @@ Export result:
   1. Added .webp and .gif support, fixed error with some .jpeg images. All uploaded images now are just converting to .png.
 * *1.1.1:*
   1. Boosty and Mastodon links.
-
+* *1.2:*
+  1. Token padding settings: thanks [@nmeier](https://github.com/nmeier)!

@@ -196,12 +196,11 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
     let circleSize = converter(parseFloat(document.getElementById('token-width').value));
     for (let i = 0; i < 3; i++) {
       page.drawCircle({
-        x: converter(paddingLeft) + circleSize * i + circleSize / 2,
-        y: pageFormat.height - converter(paddingTop) - circleSize / 2,
+        x: converter(paddingLeft) + circleSize * i + circleSize / 2 + converter(tokenPadding / 2 * (i + 1)),
+        y: pageFormat.height - converter(paddingTop) - circleSize / 2 - converter(tokenPadding / 2),
         size: circleSize / 2,
         color: PDFLib.rgb(0.6 + i / 10, 0.6 + i / 10, 0.6 + i / 10)
       });
-      let dictionary = getDictionary();
       page.drawText('Upload tokens and click «Export to PDF»', {
         x: converter(paddingLeft),
         y: pageFormat.height - circleSize - 20,
@@ -231,8 +230,8 @@ async function createPdf(tokenPages, pageFormat, paddingTop, paddingBottom, padd
           image = null;
       }
       page.drawImage(image, {
-        x: converter(tokenPages[i][j].x + tokenPadding/2) + converter(paddingLeft),
-        y: pageFormat.height - converter(tokenPages[i][j].y-tokenPadding/2) - converter(tokenPages[i][j].size) - converter(paddingTop),
+        x: converter(tokenPages[i][j].x + tokenPadding / 2) + converter(paddingLeft),
+        y: pageFormat.height - converter(tokenPages[i][j].y - tokenPadding / 2) - converter(tokenPages[i][j].size) - converter(paddingTop),
         width: converter(tokenPages[i][j].size - tokenPadding),
         height: converter(tokenPages[i][j].size - tokenPadding)
       });
@@ -400,8 +399,8 @@ function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, padding
         let image = new Image();
         image.onload = function () {
           ctx.drawImage(image,
-            (paddingLeft + pages[i][j].x + tokenPadding/2) * scaleModifer, (pageFormat.height * i + paddingTop + pages[i][j].y + tokenPadding/2) * scaleModifer,
-            (pages[i][j].size - tokenPadding) * scaleModifer, (pages[i][j].size - tokenPadding)* scaleModifer);
+            (paddingLeft + pages[i][j].x + tokenPadding / 2) * scaleModifer, (pageFormat.height * i + paddingTop + pages[i][j].y + tokenPadding / 2) * scaleModifer,
+            (pages[i][j].size - tokenPadding) * scaleModifer, (pages[i][j].size - tokenPadding) * scaleModifer);
         }
         image.src = pages[i][j].img;
       }
@@ -432,7 +431,7 @@ function prerenderInCanvas(pages, pageFormat, paddingTop, paddingBottom, padding
     for (let i = 0; i < 3; i++) {
       ctx.fillStyle = `rgb(${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255}, ${(0.6 + i / 10) * 255})`;
       ctx.beginPath();
-      ctx.arc((paddingLeft + circleSize * i + circleSize / 2) * scaleModifer, (paddingTop + circleSize / 2) * scaleModifer,
+      ctx.arc((paddingLeft + circleSize * i + circleSize / 2 + (tokenPadding * (i + 1))) * scaleModifer, (paddingTop + circleSize / 2 + tokenPadding) * scaleModifer,
         circleSize / 2 * scaleModifer,
         0, 2 * Math.PI);
       ctx.fill();
